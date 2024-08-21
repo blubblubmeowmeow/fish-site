@@ -1,10 +1,10 @@
 var falling = true;
 
-TweenLite.set("#container",{perspective:600})
+TweenLite.set("#flowers",{perspective:600})
 TweenLite.set("img",{xPercent:"-50%",yPercent:"-50%"})
 
 var total = 30;
-var container = document.getElementById("container"),	w = window.innerWidth , h = window.innerHeight;
+var container = document.getElementById("flowers"),	w = window.innerWidth , h = window.innerHeight;
  
  for (i=0; i<total; i++){ 
    var Div = document.createElement('div');
