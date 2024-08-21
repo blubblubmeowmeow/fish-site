@@ -13,3 +13,17 @@
 section, .section-border, .section-background {
     background-color: transparent !important;
 }
+
+        nav a {
+            color: #007ACC;
+            text-decoration: none;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+        }
+		
+		.important {
+            font-weight: bold;
+            color: #D8000C;
+        }
