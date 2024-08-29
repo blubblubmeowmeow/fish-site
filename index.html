@@ -26,12 +26,82 @@
 
 <div id="animation-wrapper"><div id="flowers"></div></div>
 
+
+    <div id="entries"></div>
+
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
+        import { getDatabase, ref, get, child } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js";
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyB0_rD8KxSKrwCr8oSWRVXgNCuH_wJ9STI",
+            authDomain: "fishheaddb.firebaseapp.com",
+            databaseURL: "https://fishheaddb-default-rtdb.firebaseio.com",
+            projectId: "fishheaddb",
+            storageBucket: "fishheaddb.appspot.com",
+            messagingSenderId: "237951639551",
+            appId: "1:237951639551:web:07446be2bd7d858a0551ca"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+
+        // Function to get all entries from the database
+        async function getEntries() {
+            const dbRef = ref(database);
+            const snapshot = await get(child(dbRef, 'heads'));
+            if (snapshot.exists()) {
+                const data = snapshot.val();
+                displayEntries(data);
+            } else {
+                document.getElementById("entries").innerHTML = "<p>No entries found.</p>";
+            }
+        }
+
+        // Function to display the entries in a human-readable format
+        function displayEntries(data) {
+            const entriesDiv = document.getElementById("entries");
+            entriesDiv.innerHTML = ''; // Clear any existing content
+
+            const keys = Object.keys(data).sort((a, b) => parseInt(b) - parseInt(a)); // Sort keys in descending order
+
+            keys.forEach(key => {
+                const entry = data[key];
+                const entryDiv = document.createElement("div");
+                entryDiv.className = "entry";
+
+                const entryHeader = document.createElement("h3");
+                entryHeader.textContent = `fishhead ${key}:`;
+
+                const entryText = document.createElement("p");
+                entryText.textContent = `${entry.head}`;
+
+                const entryTime = document.createElement("p");
+                const date = new Date(entry.time * 1000);
+                entryTime.textContent = `${date.toISOString()}`; // ISO 8601 format
+
+                entryDiv.appendChild(entryHeader);
+                entryDiv.appendChild(entryText);
+                entryDiv.appendChild(entryTime);
+                entriesDiv.appendChild(entryDiv);
+            });
+        }
+
+        // Fetch and display the entries on page load
+        getEntries();
+
+    </script>
+
 <hr>
 <footer>&copy; 2024 Fish | All Rights Reserved</footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 <script src="./scripts/oneko.js"></script>
 <script src="./scripts/flowers.js"></script>
+
 
 </body>
 </html> 

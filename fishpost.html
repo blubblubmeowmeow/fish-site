@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Fish Site</title>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="style.css">
+</head>
+<body style="background-color: #FFB7C5;">
+
+<h1>You're in</h1>
+
+<div id="animation-wrapper"><div id="flowers"></div></div>
+
+<hr>
+<footer>&copy; 2024 Fish | All Rights Reserved</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="./scripts/oneko.js"></script>
+<script src="./scripts/flowers.js"></script>
+
+    <h1>Enter Fish Head Text</h1>
+    <input type="text" id="headText" placeholder="Enter your text here">
+    <button onclick="submitHead()">Send</button>
+
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
+        import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js";
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyB0_rD8KxSKrwCr8oSWRVXgNCuH_wJ9STI",
+            authDomain: "fishheaddb.firebaseapp.com",
+            databaseURL: "https://fishheaddb-default-rtdb.firebaseio.com",
+            projectId: "fishheaddb",
+            storageBucket: "fishheaddb.appspot.com",
+            messagingSenderId: "237951639551",
+            appId: "1:237951639551:web:07446be2bd7d858a0551ca"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+
+        // Function to write data to the database
+        async function writeFishHead(headCount, headText) {
+            const d = new Date();
+            const seconds = Math.round(d.getTime() / 1000);
+
+            await set(ref(database, 'heads/' + headCount), {
+                head: headText,
+                time: seconds
+            });
+            console.log("Data written successfully!");
+        }
+
+        // Function to get the current maximum headCount from the database
+        async function getNextHeadCount() {
+            const dbRef = ref(database);
+            const snapshot = await get(child(dbRef, 'heads'));
+            if (snapshot.exists()) {
+                const data = snapshot.val();
+                const keys = Object.keys(data);
+                const maxHeadCount = Math.max(...keys.map(key => parseInt(key)));
+                return maxHeadCount + 1;
+            } else {
+                return 0; // If no data exists, start with 0
+            }
+        }
+
+        // Function to handle the submit action
+        async function submitHead() {
+            const headText = document.getElementById("headText").value;
+            if (headText.trim() !== "") {
+                const nextHeadCount = await getNextHeadCount();
+                await writeFishHead(nextHeadCount, headText);
+                alert("Data submitted successfully!");
+                document.getElementById("headText").value = ""; // Clear the textbox after submission
+            } else {
+                alert("Please enter some text.");
+            }
+        }
+
+        // Add event listener for Enter key press
+        document.getElementById("headText").addEventListener("keydown", function(event) {
+            if (event.key === "Enter") {
+                submitHead();
+            }
+        });
+
+        // Make the submitHead function accessible globally
+        window.submitHead = submitHead;
+
+    </script>
+
+
+
+
+</body>
+</html> 
